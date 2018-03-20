@@ -1,0 +1,9 @@
+{
+  "name": "sorter",
+  "description": "",
+  "memory": 512,
+  "timeout": 60,
+  "role": "arn:aws:iam::732378318181:role/sorter_lambda_function",
+  "environment": {},
+  "profile": "apex"
+}
