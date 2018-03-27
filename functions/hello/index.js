@@ -7,6 +7,7 @@ var Readable = require('stream').Readable
 const fs = require('fs');
 const { execSync } = require('child_process');
 
+// Exec synchronously with some logging
 const lazyExec = (cmd) => {
   console.log("--- exec: ", cmd);
   execSync(cmd,(err, stdout, stderr) => {
@@ -17,18 +18,39 @@ const lazyExec = (cmd) => {
   console.log("--- done exec");
 }
 
+const updateThisLambdaFunction = (zipFilePath) => {
+  const fileBuffer = fs.readFileSync(zipFilePath);
+  const params = {
+    FunctionName: 'sorter_hello',
+    ZipFile: fileBuffer
+  }
+  const lambda = new AWSLambda({ region: 'us-west-2' });
+  lambda.updateFunctionCode(params, (err, data) => {
+    if (!err) console.log('Upload succeeded');
+  })
+};
+
+// Zip up current dir and write to zip
+const zipTo = (fileName) => {
+  var archive = archiver('zip', {
+    zlib: { level: 9 } // Sets the compression level.
+  });
+
+  var output = fs.createWriteStream(fileName);
+  archive.pipe(output);
+  archive.glob('./*.js');
+  archive.glob('./*.json');
+  archive.glob('./node_modules/**');
+  archive.finalize();
+  return output;
+}
+
 const tmpDir = '/tmp/shortener';
 
 exports.handle = function(e, ctx, cb) {
   console.log("Starting function execution");
 
   const i = 4;
-
-  const lambda = new AWSLambda({ region: 'us-west-2' });
-  console.log("Creating archiver'");
-  var archive = archiver('zip', {
-    zlib: { level: 9 } // Sets the compression level.
-  });
 
   lazyExec(`rm -rf ${tmpDir}`);
   lazyExec(`cp -r . ${tmpDir}`);
@@ -37,33 +59,16 @@ exports.handle = function(e, ctx, cb) {
   process.chdir(tmpDir);
 
   const zipFilePath = '/tmp/newCode.zip';
-  console.log("Creating stream");
+  zipFile = zipTo(zipFilePath);
 
-  // Zip up current dir and write to zip
-  var output = fs.createWriteStream(zipFilePath);
-  //var output = new Readable();
-  archive.pipe(output);
-  console.log("globbing");
-  archive.glob('./*.js');
-  archive.glob('./*.json');
-  archive.glob('./node_modules/**');
-  console.log("finalizing");
-  archive.finalize();
-  //console.log("output", output);
+  zipFile.on('close', function() {
+    updateThisLambdaFunction(zipFilePath);
 
-  console.log("waiting for close...");
-  output.on('close', function() {
-    console.log("close callbac");
-    const fileBuffer = fs.readFileSync(zipFilePath);
-    const params = {
-      FunctionName: 'sorter_hello',
-      ZipFile: fileBuffer
-    }
-    lambda.updateFunctionCode(params, (err, data) => {
-      console.log('data = ', data);
-      console.log('err = ', err);
-    })
+    var response = {
+      statusCode: 200,
+      body: JSON.stringify({ i })
+    };
 
-    cb(null, { i })
+    cb(null, response)
   });
 }
