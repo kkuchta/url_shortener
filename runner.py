@@ -1,5 +1,5 @@
 import os
-os.chdir('functions/iterator')
+os.chdir('functions/write')
 
-from functions.iterator import main
+from functions.write import main
 print('result=', main.handle(1,2))

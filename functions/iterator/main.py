@@ -27,9 +27,6 @@ def handle(event, context):
         filename.external_attr = 0o755 << 16
 
         iteratorZip.writestr(filename, data)
-    f = open('/tmp/build_2.zip', 'wb')
-    f.write(zipBuffer.getvalue())
-    f.close()
 
     awsLambda = boto3.client('lambda')
 

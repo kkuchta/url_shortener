@@ -1,0 +1,7 @@
+{
+  "description": "Read a link (api gateway)",
+  "runtime": "python3.6",
+  "memory": 1024,
+  "timeout": 30,
+  "role": "arn:aws:iam::732378318181:role/master_read_role"
+}
