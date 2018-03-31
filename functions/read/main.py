@@ -9,11 +9,12 @@ def handle(event, context):
 
     function = f"shortener_read_{id}"
 
-    # TODO: handle invalid read number
     awsLambda = boto3.client('lambda')
-    invokeResponse = awsLambda.invoke(
-        FunctionName=function
-    )
+    try:
+        invokeResponse = awsLambda.invoke(FunctionName=function)
+    except awsLambda.exceptions.ResourceNotFoundException:
+        return { 'statusCode': 404, 'body': 'Unknown short link' }
+
     body = invokeResponse['Payload'].read()
     url = json.loads(body)['url']
 
