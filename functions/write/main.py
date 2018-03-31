@@ -4,7 +4,7 @@ import base64
 import io
 import zipfile
 
-READ_URL_PREFIX = 'https://vu4fn1fim6.execute-api.us-west-2.amazonaws.com/live/'
+READ_URL_PREFIX = 'https://kmk.party/'
 
 def createZip(codeBody):
     # Zip up this code to an in-memory buffer
