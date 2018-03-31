@@ -4,6 +4,8 @@ import base64
 import io
 import zipfile
 
+READ_URL_PREFIX = 'https://vu4fn1fim6.execute-api.us-west-2.amazonaws.com/live/'
+
 def createZip(codeBody):
     zipBuffer = io.BytesIO()
 
@@ -35,9 +37,9 @@ def handle(event, context):
 """
 
 def handle(event, context):
-
     # TODO: pull this from event
-    url = 'http://kevinkuchta.com'
+    # Grab the url param and limit it to 1k characters
+    url = event['queryStringParameters']['url'][:1000]
 
     # Grab the next identifier from our global iterator
     awsLambda = boto3.client('lambda')
@@ -48,8 +50,6 @@ def handle(event, context):
     nextId = json.loads(body)['body']
 
     newFunctionName = f"shortener_read_{nextId}"
-    print('rawcode=', rawCode(url))
-    print('creating a function named', newFunctionName)
     codeConfig = {
         'ZipFile': createZip(rawCode(url))
     }
@@ -61,5 +61,8 @@ def handle(event, context):
         Code=codeConfig
     )
 
-    return { 'id': nextId }
+    return {
+        'statusCode': 201,
+        'body': READ_URL_PREFIX + nextId
+    }
 

@@ -14,7 +14,6 @@ def handle(event, context):
         FunctionName=function
     )
     body = invokeResponse['Payload'].read()
-    print("jsonbody=", json.loads(body))
     url = json.loads(body)['url']
 
     return {
