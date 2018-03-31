@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <title>Kevin Kuchta's Ill-advised Lambda-Only Link-Shortener</title>
+    <style>
+    body {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      padding: 50px;
+      font-family: sans-serif;
+      max-width: 600px;
+    }
+    .url-input {
+      height: 40px;
+      padding: 6px;
+      font-size: 24px;
+    }
+    .submit-button {
+      height: 40px;
+      font-size: 22px;
+      border-radius: 4px;
+    }
+    </style>
+    <script>
+      const WRITE_URL = 'https://vu4fn1fim6.execute-api.us-west-2.amazonaws.com/live'
+
+      // It's been so long, I'd almost forgotten how to write this old-school js.
+      console.log('here');
+      window.shorten = function(event) {
+        event.preventDefault();
+        urlInput = document.getElementsByClassName('url-input')[0]
+        fetch(WRITE_URL, { body: JSON.stringify({ url: urlInput.value }), method: 'POST' })
+        .then((response) => response.text())
+        .then((text) => {
+          urlInput.value = text;
+          urlInput.focus();
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Kevin Kuchta's Ill-advised Lambda-Only Link-Shortener</h1>
+    <form id='shorten-form'>
+      <input name='url' class='url-input' placeholder='Paste link here'></input>
+      <button class='submit-button' onclick='shorten(event)'>shorten</button>
+    </form>
+  </body>
+</html>

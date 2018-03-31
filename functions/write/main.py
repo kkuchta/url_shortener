@@ -37,9 +37,8 @@ def handle(event, context):
 """
 
 def handle(event, context):
-    # TODO: pull this from event
-    # Grab the url param and limit it to 1k characters
-    url = event['queryStringParameters']['url'][:1000]
+    # Grab the url from the post body and limit it to 1k characters
+    url = json.loads(event['body'])['url'][:1000]
 
     # Grab the next identifier from our global iterator
     awsLambda = boto3.client('lambda')

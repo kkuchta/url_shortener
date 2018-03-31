@@ -1,5 +1,5 @@
 import os
-os.chdir('functions/write')
+os.chdir('functions/index')
 
-from functions.write import main
+from functions.index import main
 print('result=', main.handle(1,2))

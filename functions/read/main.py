@@ -9,6 +9,7 @@ def handle(event, context):
 
     function = f"shortener_read_{id}"
 
+    # TODO: handle invalid read number
     awsLambda = boto3.client('lambda')
     invokeResponse = awsLambda.invoke(
         FunctionName=function
