@@ -3,24 +3,21 @@ import json
 import boto3
 
 def handle(event, context):
-    # Clean up the id parameter and limit it's length to something sensible
+    # Get the id from the url and clean it up
     id = event['pathParameters']['id']
     id = re.sub(r'[^a-zA-Z0-9]', '', id)[:10]
 
-    function = f"shortener_read_{id}"
-
+    # Run the lambda read function for that id
     awsLambda = boto3.client('lambda')
     try:
-        invokeResponse = awsLambda.invoke(FunctionName=function)
+        invokeResponse = awsLambda.invoke(FunctionName=f"shortener_read_{id}")
     except awsLambda.exceptions.ResourceNotFoundException:
         return { 'statusCode': 404, 'body': 'Unknown short link' }
 
+    # Redirect to the result
     body = invokeResponse['Payload'].read()
     url = json.loads(body)['url']
-
     return {
         'statusCode': 301,
-        'headers': {
-            'Location': url
-        }
+        'headers': { 'Location': url }
     }

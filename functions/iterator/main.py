@@ -8,7 +8,6 @@ FUNCTION_NAME = 'shortener_iterator'
 I = 10
 
 def handle(event, context):
-    print('Starting function execution')
 
     # Load this code into a string
     with open(PYTHON_FILE, 'r') as myfile:
@@ -30,14 +29,12 @@ def handle(event, context):
 
     awsLambda = boto3.client('lambda')
 
-    print("data = ", zipBuffer.getvalue())
     response = awsLambda.update_function_code(
         FunctionName=FUNCTION_NAME,
         ZipFile=zipBuffer.getvalue(),
         Publish=True,
         DryRun=False
     )
-    print('response=', response)
 
     return {
         'statusCode': 200,

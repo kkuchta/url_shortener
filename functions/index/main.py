@@ -4,7 +4,5 @@ def handle(event, context):
     return {
         'statusCode': 200,
         'body': body,
-        'headers': {
-            'Content-Type': 'text/html'
-        }
+        'headers': { 'Content-Type': 'text/html' }
     }
