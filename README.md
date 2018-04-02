@@ -4,7 +4,7 @@ In a massive abuse of AWS Lambda, this project is a fully-functional URL shorten
 
 To be clear, this is a Bad Idea®.  There are many better ways to do this.  You should not use this code for stuff.  This is very much a "can it be done?" kinda thing.
 
-A full writeup will be on my site at [kevinkuchta.com](http://kevinkuchta.com) at some point.
+A full writeup is on [kevinkuchta.com](http://kevinkuchta.com/_site/2018/03/lambda-only-url-shortener/)
 
 # Running
 
